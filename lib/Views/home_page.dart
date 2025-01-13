@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test_visionexdigital/Views/catelog_one_screen.dart';
+import 'package:test_visionexdigital/Views/catalog_one_screen.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -130,7 +130,7 @@ class HomePage extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CatelogOneScreen()));
+                          builder: (context) => CatalogOneScreen()));
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF37AD5F),
