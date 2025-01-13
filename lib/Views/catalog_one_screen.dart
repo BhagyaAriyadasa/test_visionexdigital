@@ -132,7 +132,7 @@ class CatalogOneScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    const CatalogTwoScreen()));
+                                    CatalogTwoScreen()));
                       },
                       child: const Text("View all"))
                 ],
@@ -224,7 +224,7 @@ class CatalogOneScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    const CatalogTwoScreen()));
+                                    CatalogTwoScreen()));
                       },
                       child: const Text("View all"))
                 ],
