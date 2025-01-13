@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "161383451665",
+    "project_id": "testvisionexdigital",
+    "storage_bucket": "testvisionexdigital.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161383451665:android:64e97bb59634f2361bb5b0",
+        "android_client_info": {
+          "package_name": "com.example.test_visionexdigital"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjNumzKkYQ0m2nvrchWIzGr9PoQZOT0H0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

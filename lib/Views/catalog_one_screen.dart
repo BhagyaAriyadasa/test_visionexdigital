@@ -1,40 +1,17 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:test_visionexdigital/Views/catalog_two_screen.dart';
 
 class CatalogOneScreen extends StatelessWidget {
-  CatalogOneScreen({super.key});
-
-  final List<Map<String, dynamic>> data = [
-    {
-      'image': 'assets/images/house image 1.png',
-      'text': "\$ 580",
-      'title': "Rent 3 room",
-      'description': "Apartment in the center in the city"
-    },
-    {
-      'image': 'assets/images/house image 2.jpg',
-      'text': "\$ 750",
-      'title': "Apartment",
-      'description': "4 rooms"
-    },
-    {
-      'image': 'assets/images/house image 4.jpg',
-      'text': "\$ 900",
-      'title': "Apartment",
-      'description': "center"
-    },
-    {
-      'image': 'assets/images/house image 1.png',
-      'text': "\$ 580",
-      'title': "Rent 3 room",
-      'description': "Apartment in the center"
-    }
-  ];
+  const CatalogOneScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    final CollectionReference properties = FirebaseFirestore.instance.collection('properties');
+
     double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(width * 0.35),
@@ -132,7 +109,7 @@ class CatalogOneScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    CatalogTwoScreen()));
+                                    const CatalogTwoScreen()));
                       },
                       child: const Text("View all"))
                 ],
@@ -140,12 +117,24 @@ class CatalogOneScreen extends StatelessWidget {
             ),
             SizedBox(
               height: width * 0.4,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                    children: List.generate(
-                        data.length,
-                        (index) => Column(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: properties.snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(child: Text('No properties available.'));
+                  }
+                  final data = snapshot.data!.docs;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(
+                          data.length,
+                              (index) {
+                            final property = data[index].data() as Map<String, dynamic>;
+                            return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
@@ -156,7 +145,7 @@ class CatalogOneScreen extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
                                       image: DecorationImage(
-                                        image: AssetImage(data[index]['image']),
+                                        image: NetworkImage(property['image']),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -165,19 +154,18 @@ class CatalogOneScreen extends StatelessWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 4),
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                                20), // Rounded corners
+                                            borderRadius: BorderRadius.circular(20),
                                           ),
                                           child: Text(
-                                            data[index]['text'],
+                                            property['price'],
                                             style: TextStyle(
-                                                color: Colors.grey.shade800,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15),
+                                              color: Colors.grey.shade800,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -185,28 +173,31 @@ class CatalogOneScreen extends StatelessWidget {
                                   ),
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 18.0, top: 8),
+                                  padding: const EdgeInsets.only(left: 18.0, top: 8),
                                   child: Text(
-                                    data[index]['title'],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                    property['title'],
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 18.0),
                                   child: SizedBox(
-                                      width: width * 0.25,
-                                      child: Text(
-                                        data[index]['description'],
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                                )
+                                    width: width * 0.25,
+                                    child: Text(
+                                      property['description'],
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                               ],
-                            ))),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  }
               ),
             ),
             Padding(
@@ -224,7 +215,7 @@ class CatalogOneScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    CatalogTwoScreen()));
+                                    const CatalogTwoScreen()));
                       },
                       child: const Text("View all"))
                 ],
